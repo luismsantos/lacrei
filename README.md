@@ -47,7 +47,6 @@ O deploy da aplicação foi realizado em uma instância EC2 da AWS e está dispo
 
 ### Acessos no Ambiente de Produção
 
-- **API REST**: http://18.212.64.154/api/
 - **Admin Django**: http://18.212.64.154/admin/
 - **Documentação Swagger**: http://18.212.64.154/swagger/ 
 

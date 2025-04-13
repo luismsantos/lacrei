@@ -218,3 +218,28 @@ http://localhost:8000/swagger/
 Esta interface permite visualizar e testar todos os endpoints diretamente no navegador, facilitando o desenvolvimento e integração com a API.
 
 ---
+
+# Proposta de Integração Asaas para Split de Pagamento na Lacrei Saúde
+
+Depois de passar um tempo na documentação (https://asaasv3.docs.apiary.io/\#reference/0/cobrancas), descobri que a Asaas é perfeita para a plataforna. Basicamente, eles oferecem um sistema que permite dividir automaticamente o valor de uma cobrança entre várias partes - exatamente o que precisamos para dividir o valor das consultas entre os profissionais de saúde e a plataforma Lacrei!
+
+A ideia seria assim: quando um paciente marcar uma consulta, enviamos uma solicitação para a API da Asaas criando uma cobrança (pode ser boleto, cartão, pix, etc.) e já informamos como o dinheiro deve ser dividido. Por exemplo, se a consulta custa R$200, podemos configurar para que R$170 vá direto para a conta do profissional e R$30 fique na Lacrei como taxa de serviço.
+
+Olhando na documentação, vi que o processo é bem tranquilo. Primeiro, precisamos criar contas na Asaas tanto para a Lacrei quanto para cada profissional cadastrado. A Asaas chama isso de "wallets" (carteiras). A parte legal é que eles têm um ambiente de sandbox que podemos usar pra testar tudo sem precisar fazer pagamentos reais (https://sandbox.asaas.com).
+
+Para implementar, precisaríamos adicionar alguns campos ao cadastro dos profissionais, tipo um campo pra guardar o ID da carteira deles na Asaas. Também teríamos que criar uma nova tela no sistema para o processo de pagamento, que se comunicaria com a API da Asaas.
+
+O fluxo completo seria mais ou menos assim:
+
+1. Paciente agenda consulta e escolhe forma de pagamento
+2. Nossa aplicação envia os dados para a Asaas com as regras de split
+3. Asaas gera o link/dados de pagamento que mostramos para o paciente
+4. Paciente paga
+5. Asaas nos avisa automaticamente quando o pagamento for confirmado (usando webhooks)
+6. Atualizamos o status da consulta e enviamos confirmação por email
+7. Quando o dinheiro cair, a Asaas já faz a divisão automaticamente!
+
+Um detalhe importante que vi na documentação é que a Asaas cobra uma taxa por transação (aproximadamente 3,49% + R$0,49 para cartão de crédito), então precisamos considerar isso no modelo de negócio. Podemos embutir essa taxa no valor da consulta ou deduzi-la da nossa parte.
+
+O melhor de tudo é que não precisamos nos preocupar com questões de segurança de pagamento, já que a Asaas cuida de toda a parte sensível como armazenamento de dados de cartão.
+

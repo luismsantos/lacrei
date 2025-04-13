@@ -39,6 +39,17 @@ docker-compose up -d
 docker-compose logs -f app
 ```
 
+## 🌎 Deploy na AWS EC2
+
+O deploy da aplicação foi realizado em uma instância EC2 da AWS e está disponível através do IP:
+
+**http://18.212.64.154**
+
+### Acessos no Ambiente de Produção
+
+- **API REST**: http://18.212.64.154/api/
+- **Admin Django**: http://18.212.64.154/admin/
+- **Documentação Swagger**: http://18.212.64.154/swagger/ 
 
 ## 🚀 Endpoints da API
 
@@ -172,6 +183,10 @@ docker-compose run app python manage.py test
     - **Solução**: Implementada validação para impedir agendamento em datas anteriores à atual
 4. **Deploy na AWS**:
     - **Problema**: Ainda não foi configurado para acessar via IP externo, a porta está inacessivel por enquanto
+    - **Solução**: Configurado e liberado a porta 80 e 443 na AWS
+5. **Arquivos estáticos no Deploy**:
+    - **Problema**: A interface do projeto não estava aparecendo corretamente, pois não estava configurado corretamente para pegar arquivos estáticos 
+    - **Solução**: Configurado no container caminho correto para pegar arquivos estáticos
 
 ### Melhorias Propostas
 
